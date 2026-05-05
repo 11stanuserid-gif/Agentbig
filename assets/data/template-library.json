@@ -1,0 +1,62 @@
+[
+  {
+    "name": "render.yaml • Node backend",
+    "content": "services:\n  - type: web\n    name: my-node-api\n    env: node\n    plan: free\n    region: oregon\n    rootDir: server\n    buildCommand: npm install\n    startCommand: npm start\n    autoDeploy: true\n    envVars:\n      - key: NODE_ENV\n        value: production\n      - key: PORT\n        value: 10000\n"
+  },
+  {
+    "name": "railway.json • Express API",
+    "content": "{\n  \"$schema\": \"https://railway.app/railway.schema.json\",\n  \"build\": {\n    \"builder\": \"NIXPACKS\"\n  },\n  \"deploy\": {\n    \"numReplicas\": 1,\n    \"restartPolicyType\": \"ON_FAILURE\",\n    \"restartPolicyMaxRetries\": 10\n  }\n}\n"
+  },
+  {
+    "name": "Dockerfile • Python Flask",
+    "content": "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nENV PORT=8080\nCMD [\"gunicorn\", \"-b\", \"0.0.0.0:8080\", \"app:app\"]\n"
+  },
+  {
+    "name": "Dockerfile • Node API",
+    "content": "FROM node:20-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --omit=dev\nCOPY . .\nENV PORT=8080\nEXPOSE 8080\nCMD [\"npm\", \"start\"]\n"
+  },
+  {
+    "name": "codemagic.yaml • Flutter APK",
+    "content": "workflows:\n  android-release:\n    name: Android Release\n    environment:\n      flutter: stable\n      vars:\n        PACKAGE_NAME: com.example.app\n    scripts:\n      - flutter pub get\n      - flutter build apk --release\n    artifacts:\n      - build/**/outputs/**/*.apk\n    publishing:\n      email:\n        recipients:\n          - your@email.com\n"
+  },
+  {
+    "name": "eas.json • APK preview",
+    "content": "{\n  \"cli\": { \"version\": \">= 10.0.0\" },\n  \"build\": {\n    \"preview\": {\n      \"android\": { \"buildType\": \"apk\" },\n      \"distribution\": \"internal\"\n    },\n    \"production\": {\n      \"autoIncrement\": true\n    }\n  }\n}\n"
+  },
+  {
+    "name": "Docker Compose • API + Redis",
+    "content": "version: '3.9'\nservices:\n  api:\n    build: .\n    ports:\n      - \"8080:8080\"\n    environment:\n      REDIS_URL: redis://redis:6379\n    depends_on:\n      - redis\n  redis:\n    image: redis:7-alpine\n    ports:\n      - \"6379:6379\"\n"
+  },
+  {
+    "name": "GitHub Actions • Deploy check",
+    "content": "name: CI\non:\n  push:\n    branches: [main]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n      - run: npm ci\n      - run: npm test --if-present\n      - run: npm run build --if-present\n"
+  },
+  {
+    "name": "Procfile • Simple Node",
+    "content": "web: npm start\n"
+  },
+  {
+    "name": "Nginx • SPA fallback",
+    "content": "server {\n  listen 8080;\n  server_name _;\n  root /usr/share/nginx/html;\n  index index.html;\n  location / {\n    try_files $uri $uri/ /index.html;\n  }\n}\n"
+  },
+  {
+    "name": "Build checklist • Backend",
+    "content": "1. package.json / requirements.txt check karo\n2. PORT env variable support confirm karo\n3. Root directory sahi set karo\n4. Build command local run karo\n5. Start command test karo\n6. Secrets ko .env ya provider env me shift karo\n7. Health route (/health) banana useful hai\n8. Repo branch aur auto deploy rule verify karo\n"
+  },
+  {
+    "name": "Build checklist • APK",
+    "content": "1. Android package id unique rakho\n2. keystore / signing config ready rakho\n3. appId / workflowId build provider me verify karo\n4. Flutter or Gradle cache clear karke test build karo\n5. Release notes aur versionCode bump karo\n6. Artifact URL ko session board me pin kar lo\n"
+  },
+  {
+    "name": "Railway GraphQL sample",
+    "content": "query DashboardProjects {\n  me {\n    projects {\n      edges {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n}\n"
+  },
+  {
+    "name": "Render service notes",
+    "content": "Render API token ko bearer header me bhejo. Service create karne se pehle repo access, build command, start command aur region verify karo. Deploy hone ke baad public URL ko ZIPPilot deploy tracker me add kar do taaki frontend se open kar sako.\n"
+  },
+  {
+    "name": "Mobile env example",
+    "content": "API_BASE_URL=https://api.example.com\nAPP_NAME=Royal Creation\nANDROID_PACKAGE=com.royal.creation\nMINIFY_ENABLED=true\nSENTRY_DSN=replace_me\n"
+  }
+]
