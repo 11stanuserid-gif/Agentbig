@@ -1,0 +1,84 @@
+{
+  "backend": [
+    {
+      "id": "render",
+      "name": "Render",
+      "summary": "REST API key ke saath services list, deploy status track aur manual URL record.",
+      "docs": "https://render.com/docs/api",
+      "apiEndpoint": "https://api.render.com/v1/services",
+      "action": "list_services",
+      "hint": "Render browser API calls bearer token se chal sakti hain, lekin service create payload account setup par depend karta hai. Isliye payload helper + live list दोनों diye gaye hain."
+    },
+    {
+      "id": "railway",
+      "name": "Railway",
+      "summary": "GraphQL public API ke liye workspace/project token support aur payload builder.",
+      "docs": "https://docs.railway.com/integrations/api",
+      "apiEndpoint": "https://backboard.railway.com/graphql/v2",
+      "action": "graphql_query",
+      "sampleQuery": "query DashboardProjects { me { projects { edges { node { id name } } } } }",
+      "hint": "Railway me alag token types hote hain. Query/mutation builder ko branch, repo aur project naming ke saath extend kar sakte ho."
+    },
+    {
+      "id": "koyeb",
+      "name": "Koyeb",
+      "summary": "Backend deploy helper with env, region, rootDir aur repo-based request preset.",
+      "docs": "https://www.koyeb.com/docs/reference/api",
+      "apiEndpoint": "https://app.koyeb.com/v1/services",
+      "action": "prepare_payload",
+      "hint": "Koyeb API helper manual submit ke liye tuned hai. Repo-based service presets toolkit ke templates me bhi milenge."
+    },
+    {
+      "id": "flyio",
+      "name": "Fly.io",
+      "summary": "Machines API compatible config prep aur app/service metadata tracker.",
+      "docs": "https://fly.io/docs/machines/api/working-with-machines-api/",
+      "apiEndpoint": "https://api.machines.dev/v1/apps",
+      "action": "prepare_payload",
+      "hint": "Fly.io me app + machine config alag hota hai. Is helper me deploy token, app name aur region inputs ready hain."
+    },
+    {
+      "id": "northflank",
+      "name": "Northflank",
+      "summary": "Service config preset, env mapping aur URL tracker.",
+      "docs": "https://northflank.com/docs",
+      "apiEndpoint": "https://api.northflank.com/v1/projects",
+      "action": "prepare_payload",
+      "hint": "Northflank docs ke hisaab se project/service values ko saved config se baar-baar reuse kar sakte ho."
+    }
+  ],
+  "mobile": [
+    {
+      "id": "codemagic",
+      "name": "Codemagic",
+      "summary": "Live build trigger endpoint included. appId, workflowId, branch aur env variables supported.",
+      "docs": "https://docs.codemagic.io/rest-api/builds/",
+      "apiEndpoint": "https://api.codemagic.io/builds",
+      "hint": "Codemagic ka direct build trigger yahan se ho sakta hai agar appId, workflowId aur token ready ho."
+    },
+    {
+      "id": "eas",
+      "name": "Expo EAS",
+      "summary": "Build profile helper, preview URL slot aur artifact board.",
+      "docs": "https://docs.expo.dev/build/introduction/",
+      "apiEndpoint": "https://api.expo.dev/v2/projects",
+      "hint": "EAS ke liye payload helper diya hai. APK/AAB links ko artifact board me pin kar sakte ho."
+    },
+    {
+      "id": "appcircle",
+      "name": "Appcircle",
+      "summary": "CI/CD style build payload helper aur release artifact tracker.",
+      "docs": "https://docs.appcircle.io/",
+      "apiEndpoint": "https://api.appcircle.io",
+      "hint": "Appcircle build output ya download URL milte hi manual artifact add se board me show kara sakte ho."
+    },
+    {
+      "id": "bitrise",
+      "name": "Bitrise",
+      "summary": "Workflow config helper aur mobile artifact storage slot.",
+      "docs": "https://devcenter.bitrise.io/en/api/overview.html",
+      "apiEndpoint": "https://api.bitrise.io/v0.1/apps",
+      "hint": "Bitrise app slug aur workflow ko build panel me rakhkar payload save rakho."
+    }
+  ]
+}
