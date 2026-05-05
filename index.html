@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZIPPilot Pro • ZIP → GitHub → Deploy</title>
+  <meta name="description" content="ZIP upload, extract, manage, GitHub push, backend deploy assistant, mobile build tracker, APK monitor." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/app.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">⚙️</div>
+        <div>
+          <h1>ZIPPilot Pro</h1>
+          <p>ZIP → GitHub → Deploy → APK</p>
+        </div>
+      </div>
+
+      <div class="hero-card glass">
+        <img src="./assets/img/providers-strip.png" alt="Provider strip" class="hero-strip" />
+        <div class="hero-copy">
+          <strong>Ek hi jagah se</strong>
+          <span>extract, manage, push, cleanup, deploy aur build monitor.</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" id="navList">
+        <button class="nav-btn active" data-target="dashboard">🏠 Dashboard</button>
+        <button class="nav-btn" data-target="workspace">🗂️ Workspace</button>
+        <button class="nav-btn" data-target="github">🐙 GitHub Push</button>
+        <button class="nav-btn" data-target="backend">🚀 Backend Deploy</button>
+        <button class="nav-btn" data-target="mobile">📱 Frontend / APK</button>
+        <button class="nav-btn" data-target="cleanup">🧹 Repo Cleanup</button>
+        <button class="nav-btn" data-target="toolkit">🧰 Toolkit</button>
+      </nav>
+
+      <div class="mini-panel glass">
+        <div class="mini-title">Live counters</div>
+        <div class="mini-grid">
+          <div><span id="statFiles">0</span><small>Files</small></div>
+          <div><span id="statRepos">0</span><small>Repos</small></div>
+          <div><span id="statDeploys">0</span><small>Deploys</small></div>
+          <div><span id="statBuilds">0</span><small>Builds</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="panel active" id="panel-dashboard">
+        <div class="top-banner glass">
+          <div>
+            <div class="eyebrow">Workflow selector</div>
+            <h2>Backend ya Frontend flow se start karo</h2>
+            <p>Backend mode me ZIP → manage → GitHub → deploy URL track. Frontend mode me ZIP → manage → GitHub → build service → APK / artifact preview.</p>
+          </div>
+          <img src="./assets/img/dashboard-grid.png" alt="Dashboard graphic" class="banner-art" />
+        </div>
+
+        <div class="mode-grid">
+          <article class="mode-card glass selected" data-mode="backend" id="modeBackend">
+            <img src="./assets/img/hero-backend.png" alt="Backend workflow" />
+            <div>
+              <h3>Backend Flow</h3>
+              <p>Render, Railway, Koyeb, Fly.io, Northflank jaise providers ke liye deploy center.</p>
+              <ul>
+                <li>ZIP extract + file prune</li>
+                <li>GitHub push + branch control</li>
+                <li>Deploy history + live URL slots</li>
+              </ul>
+            </div>
+          </article>
+          <article class="mode-card glass" data-mode="frontend" id="modeFrontend">
+            <img src="./assets/img/hero-frontend.png" alt="Frontend workflow" />
+            <div>
+              <h3>Frontend / APK Flow</h3>
+              <p>Codemagic, EAS, Appcircle style build orchestration aur APK tracker ke saath.</p>
+              <ul>
+                <li>ZIP manage + repo push</li>
+                <li>Build request payload helper</li>
+                <li>APK, AAB, IPA, preview links board</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <div class="card-grid two">
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Current workflow</div>
+                <h3 id="currentModeTitle">Backend workflow active</h3>
+              </div>
+              <span class="pill success" id="currentModeBadge">backend</span>
+            </div>
+            <div class="step-line" id="dynamicSteps">
+              <div class="step-chip active">1. ZIP</div>
+              <div class="step-chip">2. Manage</div>
+              <div class="step-chip">3. GitHub</div>
+              <div class="step-chip">4. Deploy</div>
+            </div>
+            <div class="helper-text" id="modeSummary">Backend deployment links aur URLs yahin se manage honge.</div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Quick actions</div>
+                <h3>Fast controls</h3>
+              </div>
+            </div>
+            <div class="quick-actions">
+              <button class="soft-btn" data-jump="workspace">Upload ZIP</button>
+              <button class="soft-btn" data-jump="github">Load Repos</button>
+              <button class="soft-btn" data-jump="backend">Deploy Setup</button>
+              <button class="soft-btn" data-jump="mobile">Build Monitor</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Recent activity</div>
+              <h3>Session log</h3>
+            </div>
+            <button class="ghost-btn" id="clearLogBtn">Clear</button>
+          </div>
+          <div class="activity-log" id="activityLog"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-workspace">
+        <div class="section-grid">
+          <div class="card glass span-2">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Step 1</div>
+                <h3>ZIP upload aur extract</h3>
+              </div>
+              <span class="pill" id="zipModeLabel">backend mode</span>
+            </div>
+            <label class="upload-box" id="uploadBox">
+              <input type="file" id="zipInput" accept=".zip" hidden />
+              <img src="./assets/img/noise-panel.png" alt="Upload art" />
+              <div>
+                <strong>ZIP file drop karo ya tap karke select karo</strong>
+                <p>Folder structure preserve hogi. Extract ke baad tum file/folder skip ya strip kar sakte ho.</p>
+              </div>
+            </label>
+            <div class="stats-row" id="zipStats">
+              <div><strong id="zipName">No ZIP selected</strong><span>ZIP name</span></div>
+              <div><strong id="zipCount">0</strong><span>files</span></div>
+              <div><strong id="zipSize">0 KB</strong><span>size</span></div>
+              <button class="primary-btn" id="extractBtn">Extract ZIP</button>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Workspace health</div>
+                <h3>Instant checks</h3>
+              </div>
+            </div>
+            <div class="check-grid" id="workspaceChecks"></div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Step 2</div>
+              <h3>File manager</h3>
+            </div>
+            <div class="inline-tools">
+              <input class="search-input" id="fileSearch" placeholder="file search..." />
+              <button class="ghost-btn" id="expandBtn">Expand</button>
+              <button class="ghost-btn" id="collapseBtn">Collapse</button>
+              <button class="ghost-btn" id="restoreBtn">Restore all</button>
+            </div>
+          </div>
+          <div class="helper-line">
+            <span class="marker red"></span>Delete = file push nahi hogi • <span class="marker yellow"></span>Strip Folder = folder naam hat jayega, files upar shift hongi.
+          </div>
+          <div class="manager-summary" id="managerSummary">Pehle ZIP extract karo.</div>
+          <div class="tree-panel" id="treePanel"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-github">
+        <div class="card-grid two">
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">GitHub auth</div>
+                <h3>Token aur repo sync</h3>
+              </div>
+            </div>
+            <div class="form-stack">
+              <input class="field" type="password" id="ghToken" placeholder="GitHub Personal Access Token (repo scope)" />
+              <div class="button-row">
+                <button class="primary-btn" id="loadReposBtn">Load repos</button>
+                <button class="ghost-btn" id="saveTokenBtn">Save locally</button>
+              </div>
+              <p class="tiny">Token browser localStorage me save hoga sirf tumhare device par. Chaaho to cleanup me auto-sync bhi use kar sakte ho.</p>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Extra feature</div>
+                <h3>Naya repo create karo</h3>
+              </div>
+            </div>
+            <div class="form-stack">
+              <input class="field" id="newRepoName" placeholder="new repo name" />
+              <input class="field" id="newRepoDesc" placeholder="description (optional)" />
+              <label class="toggle-row"><input type="checkbox" id="newRepoPrivate" /> private repo</label>
+              <button class="secondary-btn" id="createRepoBtn">Create repo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Repositories</div>
+              <h3>Select target repos</h3>
+            </div>
+            <div class="inline-tools">
+              <input class="search-input" id="repoSearch" placeholder="search repo" />
+              <button class="ghost-btn" id="repoAllBtn">All</button>
+              <button class="ghost-btn" id="repoNoneBtn">None</button>
+            </div>
+          </div>
+          <div class="repo-list" id="repoList"></div>
+          <div class="tiny status-line" id="repoCountLabel">0 selected</div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Commit settings</div>
+              <h3>Push controls</h3>
+            </div>
+          </div>
+          <div class="triple-grid">
+            <input class="field" id="commitMsg" value="Add files from ZIP" />
+            <input class="field" id="branchName" value="main" />
+            <select class="field" id="pushStrategy">
+              <option value="upsert">Upsert files</option>
+              <option value="safe">Only new files</option>
+            </select>
+          </div>
+          <div class="helper-text" id="pushSummary">Files extract karo aur repo select karo.</div>
+          <div class="progress-wrap hidden" id="pushProgressWrap">
+            <div class="progress-label" id="pushProgressLabel">Waiting...</div>
+            <div class="progress-bar"><span id="pushProgressBar"></span></div>
+          </div>
+          <div class="button-row top-gap">
+            <button class="success-btn" id="pushBtn" disabled>Push to selected repos</button>
+            <button class="ghost-btn" id="copyCurlBtn">Copy summary</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-backend">
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Backend deploy center</div>
+              <h3>Render, Railway aur competitors</h3>
+            </div>
+            <button class="ghost-btn" id="refreshProvidersBtn">Reload catalog</button>
+          </div>
+          <div class="provider-grid" id="backendProviderGrid"></div>
+        </div>
+
+        <div class="card-grid two">
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Provider setup</div>
+                <h3 id="backendProviderTitle">Provider config</h3>
+              </div>
+              <span class="pill" id="backendProviderBadge">render</span>
+            </div>
+            <div class="form-stack">
+              <input class="field" id="deployToken" type="password" placeholder="provider token / api key" />
+              <input class="field" id="deployRepo" placeholder="owner/repo ya repo url" />
+              <div class="double-grid">
+                <input class="field" id="deployBranch" value="main" placeholder="branch" />
+                <input class="field" id="deployService" placeholder="service name" />
+              </div>
+              <div class="double-grid">
+                <input class="field" id="deployRootDir" placeholder="root dir e.g. server" />
+                <input class="field" id="deployRegion" placeholder="region e.g. oregon" />
+              </div>
+              <input class="field" id="deployBuild" placeholder="build command" />
+              <input class="field" id="deployStart" placeholder="start command" />
+              <textarea class="field area" id="deployEnv" placeholder="ENV_KEY=value\nENV_TWO=value"></textarea>
+              <div class="button-row wrap-row">
+                <button class="primary-btn" id="saveDeployBtn">Save config</button>
+                <button class="secondary-btn" id="prepareDeployBtn">Prepare request</button>
+                <button class="ghost-btn" id="openProviderDocsBtn">Open docs</button>
+              </div>
+              <div class="tiny" id="providerHint">Selected provider ke hisaab se request payload niche banega.</div>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Request builder</div>
+                <h3>Deploy payload / API helper</h3>
+              </div>
+            </div>
+            <textarea class="code-box" id="deployPayload" spellcheck="false"></textarea>
+            <div class="button-row top-gap wrap-row">
+              <button class="success-btn" id="attemptProviderBtn">Attempt live action</button>
+              <button class="ghost-btn" id="copyDeployPayloadBtn">Copy payload</button>
+              <button class="ghost-btn" id="copyDeployCurlBtn">Copy cURL</button>
+            </div>
+            <div class="helper-text" id="providerActionHint">Live action browser-CORS par depend karega. Agar API response aaye to deploy history me save ho jayega.</div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Deploy tracker</div>
+              <h3>Done URLs aur responses</h3>
+            </div>
+            <div class="inline-tools">
+              <input class="search-input" id="manualDeployUrl" placeholder="manual deployed URL paste karo" />
+              <button class="ghost-btn" id="addDeployUrlBtn">Add URL</button>
+            </div>
+          </div>
+          <div class="history-grid" id="deployHistory"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-mobile">
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Mobile build center</div>
+              <h3>Codemagic + frontend deploy helpers</h3>
+            </div>
+          </div>
+          <div class="provider-grid" id="mobileProviderGrid"></div>
+        </div>
+
+        <div class="card-grid two">
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Build config</div>
+                <h3 id="mobileProviderTitle">Codemagic workflow</h3>
+              </div>
+              <span class="pill warning" id="mobileProviderBadge">codemagic</span>
+            </div>
+            <div class="form-stack">
+              <input class="field" id="buildToken" type="password" placeholder="build provider token" />
+              <div class="double-grid">
+                <input class="field" id="buildAppId" placeholder="appId / projectId" />
+                <input class="field" id="buildWorkflowId" placeholder="workflowId / profile" />
+              </div>
+              <div class="double-grid">
+                <input class="field" id="buildBranch" value="main" placeholder="branch" />
+                <input class="field" id="buildPlatform" value="android" placeholder="platform" />
+              </div>
+              <textarea class="field area" id="buildEnv" placeholder="ENV=value\nAPK_NAME=myapp"></textarea>
+              <div class="button-row wrap-row">
+                <button class="primary-btn" id="prepareBuildBtn">Prepare build</button>
+                <button class="success-btn" id="triggerBuildBtn">Trigger build</button>
+                <button class="ghost-btn" id="copyBuildCurlBtn">Copy cURL</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Build payload</div>
+                <h3>Request preview</h3>
+              </div>
+            </div>
+            <textarea class="code-box" id="buildPayload" spellcheck="false"></textarea>
+            <div class="helper-text" id="buildHint">Codemagic live API trigger supported. Dusre providers ke liye payload helper + artifact tracker diya gaya hai.</div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Artifacts</div>
+              <h3>APK / AAB / preview links</h3>
+            </div>
+            <div class="inline-tools">
+              <input class="search-input" id="manualArtifactUrl" placeholder="manual APK / artifact url" />
+              <button class="ghost-btn" id="addArtifactBtn">Add artifact</button>
+            </div>
+          </div>
+          <div class="artifact-grid" id="artifactGrid"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-cleanup">
+        <div class="card-grid two">
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Cleanup auth</div>
+                <h3>GitHub token sync</h3>
+              </div>
+            </div>
+            <div class="form-stack">
+              <input class="field" type="password" id="cleanupToken" placeholder="GitHub token" />
+              <div class="button-row">
+                <button class="ghost-btn" id="syncCleanupBtn">Sync from GitHub tab</button>
+                <button class="primary-btn" id="loadCleanupReposBtn">Load repos</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Branch</div>
+                <h3>Remote tree loader</h3>
+              </div>
+            </div>
+            <div class="double-grid">
+              <input class="field" id="cleanupBranch" value="main" />
+              <button class="secondary-btn" id="loadRemoteBtn">Load remote files</button>
+            </div>
+            <div class="tiny" id="cleanupRepoLabel">Koi repo select nahi</div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Cleanup repos</div>
+              <h3>Select a repo</h3>
+            </div>
+            <input class="search-input" id="cleanupRepoSearch" placeholder="search repo" />
+          </div>
+          <div class="repo-list" id="cleanupRepoList"></div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">Remote files</div>
+              <h3>Delete selected files</h3>
+            </div>
+            <div class="inline-tools">
+              <button class="ghost-btn" id="cleanupAllBtn">All</button>
+              <button class="ghost-btn" id="cleanupNoneBtn">None</button>
+            </div>
+          </div>
+          <div class="manager-summary" id="cleanupSummary">Remote files load karo.</div>
+          <div class="tree-panel" id="remoteTree"></div>
+          <div class="button-row top-gap wrap-row">
+            <input class="field grow" id="cleanupCommitMsg" value="Delete files via ZIPPilot Pro" />
+            <button class="danger-btn" id="deleteRemoteBtn" disabled>Delete selected</button>
+          </div>
+          <div class="progress-wrap hidden" id="cleanupProgressWrap">
+            <div class="progress-label" id="cleanupProgressLabel">Waiting...</div>
+            <div class="progress-bar danger"><span id="cleanupProgressBar"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-toolkit">
+        <div class="card-grid two">
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Environment presets</div>
+                <h3>Useful deployment snippets</h3>
+              </div>
+            </div>
+            <select class="field" id="templatePicker"></select>
+            <textarea class="code-box top-gap" id="templateBox" spellcheck="false"></textarea>
+            <div class="button-row top-gap">
+              <button class="ghost-btn" id="copyTemplateBtn">Copy template</button>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head">
+              <div>
+                <div class="eyebrow">Workspace export</div>
+                <h3>Backup / restore local data</h3>
+              </div>
+            </div>
+            <div class="button-row wrap-row">
+              <button class="primary-btn" id="exportWorkspaceBtn">Export JSON</button>
+              <label class="secondary-btn upload-inline">Import JSON<input type="file" id="importWorkspaceInput" accept="application/json" hidden></label>
+              <button class="ghost-btn" id="resetWorkspaceBtn">Reset local state</button>
+            </div>
+            <div class="tiny top-gap">Isse selected mode, deploy history, APK links, saved configs aur recent session data export/import kar sakte ho.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>
